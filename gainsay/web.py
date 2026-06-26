@@ -254,6 +254,37 @@ def _search_searxng(query: str, n: int, _caller: str | None = None) -> list[dict
     return out
 
 
+def _search_ddgs(query: str, n: int, _caller: str | None = None) -> list[dict]:
+    """Query DuckDuckGo via the maintained `ddgs` library, which tracks DDG's current
+    API + anti-bot far better than scraping html.duckduckgo.com (which DDG now blocks
+    outright). Falls through (returns []) if the library is missing or the query fails."""
+    try:
+        try:
+            from ddgs import DDGS
+        except ImportError:
+            from duckduckgo_search import DDGS  # older package name, same API
+    except ImportError:
+        return []
+    try:
+        rows = list(DDGS().text(query, max_results=n))
+    except Exception:
+        return []  # blocked/rate-limited/offline -> let the chain fall back
+    out: list[dict] = []
+    for r in rows:
+        url = r.get("href") or r.get("url") or ""
+        if not url:
+            continue
+        out.append({
+            "title":   r.get("title", "") or "",
+            "url":     url,
+            "snippet": r.get("body", "") or r.get("snippet", "") or "",
+            "source":  "ddgs",
+        })
+        if len(out) >= n:
+            break
+    return out
+
+
 @_audited("search")
 def search(query: str, n: int = 5, _caller: str | None = None) -> list[dict]:
     """Return up to n results. Tries the optional self-hosted backends
@@ -265,7 +296,7 @@ def search(query: str, n: int = 5, _caller: str | None = None) -> list[dict]:
     log; it has no effect on whether the call proceeds.
     """
     last_err: Exception | None = None
-    for backend in (_search_whoogle, _search_searxng, _search_ddg, _search_bing, _search_brave):
+    for backend in (_search_whoogle, _search_searxng, _search_ddgs, _search_ddg, _search_bing, _search_brave):
         try:
             results = backend(query, n, _caller=_caller)
         except Exception as e:
