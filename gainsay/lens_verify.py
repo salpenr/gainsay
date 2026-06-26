@@ -148,6 +148,11 @@ def evidence_profile(sources: list[dict], consensus: dict | None = None) -> dict
         k = (str(s.get("tag", "?"))[0] or "?").upper()
         by_tier[k] = by_tier.get(k, 0) + 1
         nm = (s.get("name") or "").strip().lower()
+        # Collapse format-variants of one work (report.txt / report.md / report.pdf) so a
+        # single underlying source can't inflate the distinct-source count: re-extraction
+        # is not corroboration. (Different files on the same topic stay distinct — that
+        # harder semantic dedup is the disagreement engine's job, not a string count.)
+        nm = re.sub(r"\.(txt|md|markdown|pdf|html?|docx?|json|csv)$", "", nm)
         if nm:
             names.add(nm)
         years += [int(y) for y in _YEAR_RE.findall(s.get("name", ""))]

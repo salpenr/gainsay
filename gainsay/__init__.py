@@ -68,12 +68,27 @@ _STOP = set((
 ).split())
 
 
+# Narrative/title framing that pollutes keyword search but isn't a general stopword
+# (kept out of _STOP, which other code reuses for question-keys). Pasted article titles
+# like "I've studied X for 25 years, here's why..." otherwise bury the topic words.
+_FRAMING = set((
+    "i ive im id me my mine we us our you youre youve weve here heres theres "
+    "ve s m re ll d more than year years ago over just really actually"
+).split())
+
+
 def _search_query(question: str, max_words: int = 8) -> str:
-    """Turn a natural-language question into a short keyword query. The live HTML
-    search backend returns nothing for long, punctuated questions but works well
-    on a handful of keywords, so strip punctuation + stopwords and cap length."""
+    """Turn a natural-language question OR a narrative article title into a short keyword
+    query. The live HTML search backend returns nothing for long, punctuated, first-person
+    phrases, so strip punctuation, drop stopwords + title-framing words + bare numbers +
+    single letters, and cap length — keeping the topical content words."""
     q = re.sub(r"[^\w\s_-]", " ", question.strip().rstrip("?.!"))  # keep - and _
-    words = [w for w in q.split() if w.lower() not in _STOP]
+    words = []
+    for w in q.split():
+        lw = w.lower()
+        if lw in _STOP or lw in _FRAMING or len(w) < 2 or w.isdigit():
+            continue
+        words.append(w)
     return " ".join(words[:max_words]) or question.strip()
 
 
