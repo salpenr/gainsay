@@ -2,13 +2,13 @@
 
 **A local engine for intellectual due process.**
 
-> *Trust the process enough that you never have to trust the authority.*
-
 Most answer engines are built to tell you what is true. Gainsay is built to show you *how* a
 conclusion was reached — and to leave you free to disagree with it. It runs entirely on your own
 machine, cites every claim back to the source it came from, and surfaces where those sources
 contradict one another. The promise is not a better answer; it is an answer you can **inspect,
 reproduce, and contest** — without having to trust anyone, including us.
+
+> *Trust the process enough that you never have to trust the authority.*
 
 ## What Gainsay promises
 
