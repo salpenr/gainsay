@@ -166,7 +166,7 @@ class Handler(BaseHTTPRequestHandler):
             self._send(400, json.dumps({"error": "empty query"}))
             return
         if path == "/report_stream":
-            import lens_report  # lazy: pulls gainsay which is already loaded
+            from . import lens_report  # lazy: pulls gainsay which is already loaded
             rkw = dict(
                 n_web=int(req.get("web", 5)),
                 k_books=int(req.get("books", 4)),

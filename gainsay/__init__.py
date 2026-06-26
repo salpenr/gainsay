@@ -32,15 +32,15 @@ import time
 import urllib.request
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-import web          # noqa: E402  -- local web search/fetch (privacy-routed, gated)
-import rag          # noqa: E402  -- local reference library vector store
-import translate    # noqa: E402  -- local offline translation (international sources)
-import lens_rerank  # noqa: E402  -- LLM-as-judge reranking (retrieve-many-then-rerank)
-import lens_agent   # noqa: E402  -- agentic query decomposition (deep mode)
-import lens_verify  # noqa: E402  -- self-critique / SAFE citation verification
-import lens_scholar # noqa: E402  -- scholarly connectors (OpenAlex/Semantic Scholar/arXiv) → [S#]
-import lens_history # noqa: E402  -- revision history ("how it changed its mind"), opt-in + local
+# package layout: sibling modules imported relatively below
+from . import web          # noqa: E402  -- local web search/fetch (privacy-routed, gated)
+from . import rag          # noqa: E402  -- local reference library vector store
+from . import translate    # noqa: E402  -- local offline translation (international sources)
+from . import lens_rerank  # noqa: E402  -- LLM-as-judge reranking (retrieve-many-then-rerank)
+from . import lens_agent   # noqa: E402  -- agentic query decomposition (deep mode)
+from . import lens_verify  # noqa: E402  -- self-critique / SAFE citation verification
+from . import lens_scholar # noqa: E402  -- scholarly connectors (OpenAlex/Semantic Scholar/arXiv) → [S#]
+from . import lens_history # noqa: E402  -- revision history ("how it changed its mind"), opt-in + local
 
 OLLAMA = "http://127.0.0.1:11434/api/chat"
 MODEL = os.environ.get("GAINSAY_MODEL", "gpt-oss:20b")

@@ -114,18 +114,21 @@ The promises above are enforced *structurally*, not by good intentions:
 - **A local [Ollama](https://ollama.com) install**, with:
   - a chat model for synthesis (default `gpt-oss:20b`)
   - an embedding model for the library tier (e.g. `nomic-embed-text`)
-- Optional Python packages (everything degrades gracefully if missing) — see `requirements.txt`. The
-  core loop needs **no** third-party packages; `numpy` is strongly recommended for fast search on large
-  indexes.
+- `pip install gainsay` pulls in the helpful extras automatically (`numpy` for fast search,
+  `beautifulsoup4` for HTML cleaning, `charset-normalizer` for encoding). The core loop runs on the
+  standard library alone; offline translation is the one opt-in extra (`pip install "gainsay[translate]"`).
 
 ```bash
-# 1. install Ollama from https://ollama.com, then:
+# 1. install Gainsay
+pip install gainsay
+
+# 2. install Ollama from https://ollama.com, then pull the models:
 ollama pull gpt-oss:20b
 ollama pull nomic-embed-text
-
-# 2. install optional Python deps (recommended)
-pip install -r requirements.txt
 ```
+
+Prefer running from a clone without installing? Use `python -m gainsay "your question"` in place of the
+`gainsay` command shown below.
 
 ---
 
@@ -133,28 +136,28 @@ pip install -r requirements.txt
 
 ```bash
 # ask a question (web + your library, reranked, cited)
-python gainsay.py "what is retrieval-augmented generation?"
+gainsay "what is retrieval-augmented generation?"
 
 # control how much evidence to pull
-python gainsay.py --web 6 --books 4 "explain RRF rank fusion"
+gainsay --web 6 --books 4 "explain RRF rank fusion"
 
 # library only (fully offline; nothing leaves your machine)
-python gainsay.py --no-web "what does my style guide say about headings?"
+gainsay --no-web "what does my style guide say about headings?"
 
 # web only (skip the library tier)
-python gainsay.py --no-books "latest stable release of sqlite"
+gainsay --no-books "latest stable release of sqlite"
 
 # deep mode: decompose the question into sub-questions first
-python gainsay.py --deep "compare two approaches to vector search"
+gainsay --deep "compare two approaches to vector search"
 
 # turn on the disagreement engine explicitly
-python gainsay.py --verify "is X true?"
+gainsay --verify "is X true?"
 
 # add the scholarly tier
-python gainsay.py --scholar "evidence for diffusion model guidance scaling"
+gainsay --scholar "evidence for diffusion model guidance scaling"
 
 # machine-readable output (for scripting / integration)
-python gainsay.py --json "your question"
+gainsay --json "your question"
 ```
 
 Common flags:
@@ -176,7 +179,7 @@ Common flags:
 There is also a streaming web UI:
 
 ```bash
-python gainsay_web.py
+gainsay-web
 # then open the printed local URL in your browser
 ```
 
@@ -189,7 +192,7 @@ documents you own. Indexing reads your files, splits them into chunks, embeds ea
 Ollama embedding model, and stores the vectors in a local sqlite database — nothing is uploaded.
 
 ```python
-import rag
+from gainsay import rag
 
 # index a folder (or a single file) of YOUR documents
 rag.index_path(r"/path/to/your/documents")

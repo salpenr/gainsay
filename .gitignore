@@ -8,3 +8,6 @@ __pycache__/
 venv/
 *.log
 .DS_Store
+dist/
+build/
+*.egg-info/

@@ -30,8 +30,8 @@ import time
 from pathlib import Path
 
 import gainsay as ol
-import lens_agent
-import lens_verify
+from . import lens_agent
+from . import lens_verify
 
 REPORTS_DIR = Path(os.environ.get(
     "GAINSAY_REPORTS_DIR",
