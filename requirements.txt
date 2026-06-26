@@ -1,0 +1,36 @@
+# Gainsay dependencies
+#
+# Gainsay is built to run on the Python standard library wherever possible:
+# all model and embedding calls go to a local Ollama server over plain HTTP
+# (urllib), and the vector store is plain sqlite3. There is no required
+# third-party runtime dependency for the core retrieve -> rerank -> verify ->
+# synthesize loop. Everything below is OPTIONAL and degrades gracefully when
+# absent (Gainsay falls back to a slower or simpler code path and keeps working).
+
+# --- Strongly recommended -------------------------------------------------
+# Vectorizes the per-query cosine search into a single cached matmul instead
+# of a pure-Python loop over every chunk. Without it, search still works but
+# is markedly slower on large indexes.
+numpy>=1.24
+
+# --- Web tier (optional) --------------------------------------------------
+# Cleaner HTML-to-text extraction when fetching web pages. Without it, a
+# built-in regex stripper is used instead.
+beautifulsoup4>=4.12
+
+# Robust character-encoding detection for fetched pages in non-UTF-8 charsets.
+charset-normalizer>=3.0
+
+# --- Offline translation tier (optional) ----------------------------------
+# Local, offline translation of non-English sources so they can be cited.
+# Requires separately downloaded language packages. Omit if you only query
+# English-language material.
+argostranslate>=1.9
+
+# --- Notes ----------------------------------------------------------------
+# A local Ollama install is REQUIRED but is NOT a pip package. Install it from
+# https://ollama.com and pull a chat model plus an embedding model, e.g.:
+#     ollama pull gpt-oss:20b
+#     ollama pull nomic-embed-text
+# gpt-oss:20b is the default synthesis model; set GAINSAY_MODEL to a smaller
+# model like llama3.1:8b on a lighter machine. See README.md for configuration.

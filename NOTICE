@@ -1,0 +1,46 @@
+NOTICE — third-party software & provenance
+===========================================
+
+Crosslight is released under the license in the LICENSE file. This NOTICE documents
+its provenance and its relationship to third-party software, content, and models.
+
+No bundled third-party content or model weights
+-----------------------------------------------
+Crosslight ships with an EMPTY document index. It does not include, redistribute, or
+embed any books, articles, datasets, copyrighted text, or model weights. The
+library ([B#]) tier is a capability you fill with documents you own or are licensed
+to use. Language models are downloaded separately by the user via Ollama and are
+governed by their own licenses; Crosslight redistributes none of them.
+
+Third-party Python dependencies
+-------------------------------
+All runtime dependencies are OPTIONAL (the core retrieve -> rerank -> verify ->
+synthesize loop runs on the Python standard library) and are permissively licensed.
+They are not bundled; users install them via pip, under their own licenses:
+
+  - numpy               BSD-3-Clause
+  - beautifulsoup4      MIT
+  - charset-normalizer  MIT
+  - argostranslate      MIT
+
+External services
+-----------------
+The web and scholarly tiers call public third-party services at runtime, on the
+user's own machine (e.g. OpenAlex, Semantic Scholar, arXiv, and a configurable web
+search backend). Crosslight redistributes none of their data; such use is subject to
+each service's own terms.
+
+Techniques
+----------
+Crosslight implements well-known, publicly documented techniques — retrieval-augmented
+generation; BM25 + embedding hybrid retrieval with reciprocal-rank fusion;
+LLM-as-judge reranking; claim/source consensus ("disagreement") checking; and
+standard indirect-prompt-injection defenses. Methods and algorithms are not subject
+to copyright. No third-party source code or text was copied into this project.
+
+Authorship
+----------
+Crosslight was engineered with substantial AI assistance — the bulk of the build and
+review was performed by AI models (Anthropic's Claude as lead engineer, with review
+and critique from other AI models) under human direction. It is released as a
+standalone, original work.
